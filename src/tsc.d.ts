@@ -345,7 +345,7 @@ declare module TypeScript {
         Specify_locale_for_errors_and_messages_For_example_0_or_1: string;
         Syntax_0: string;
         options: string;
-        file: string;
+        file1: string;
         Examples: string;
         Options: string;
         Insert_command_line_options_and_files_from_a_file: string;
@@ -354,7 +354,7 @@ declare module TypeScript {
         NL_Recompiling_0: string;
         STRING: string;
         KIND: string;
-        FILE: string;
+        file2: string;
         VERSION: string;
         LOCATION: string;
         DIRECTORY: string;
@@ -374,6 +374,10 @@ declare module TypeScript {
         Constructor_signature_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: string;
         Lambda_Function_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: string;
         Array_Literal_implicitly_has_an_any_type_from_widening: string;
+        Use_of_deprecated_type_bool_Use_boolean_instead: string;
+        module_is_deprecated_Use_require_instead: string;
+        Allow_bool_as_a_synonym_for_boolean: string;
+        Allow_module_as_a_synonym_for_require: string;
     };
 }
 declare module TypeScript {
@@ -1976,7 +1980,7 @@ declare module TypeScript {
             "code": number;
             "category": DiagnosticCategory;
         };
-        "file": {
+        "file1": {
             "code": number;
             "category": DiagnosticCategory;
         };
@@ -2012,7 +2016,7 @@ declare module TypeScript {
             "code": number;
             "category": DiagnosticCategory;
         };
-        "FILE": {
+        "file2": {
             "code": number;
             "category": DiagnosticCategory;
         };
@@ -2089,6 +2093,22 @@ declare module TypeScript {
             "category": DiagnosticCategory;
         };
         "Array Literal implicitly has an 'any' type from widening.": {
+            "code": number;
+            "category": DiagnosticCategory;
+        };
+        "Use of deprecated type 'bool'. Use 'boolean' instead.": {
+            "code": number;
+            "category": DiagnosticCategory;
+        };
+        "'module(...)' is deprecated. Use 'require(...)' instead.": {
+            "code": number;
+            "category": DiagnosticCategory;
+        };
+        "Allow 'bool' as a synonym for 'boolean'.": {
+            "code": number;
+            "category": DiagnosticCategory;
+        };
+        "Allow 'module(...)' as a synonym for 'require(...)'.": {
             "code": number;
             "category": DiagnosticCategory;
         };
@@ -2362,12 +2382,15 @@ declare module TypeScript {
     class ParseOptions {
         private _languageVersion;
         private _allowAutomaticSemicolonInsertion;
-        constructor(languageVersion: TypeScript.LanguageVersion, allowAutomaticSemicolonInsertion: boolean);
+        private _allowModuleKeywordInExternalModuleReference;
+        constructor(languageVersion: TypeScript.LanguageVersion, allowAutomaticSemicolonInsertion: boolean, allowModuleKeywordInExternalModuleReference: boolean);
         public toJSON(key: any): {
             allowAutomaticSemicolonInsertion: boolean;
+            allowModuleKeywordInExternalModuleReference: boolean;
         };
         public languageVersion(): TypeScript.LanguageVersion;
         public allowAutomaticSemicolonInsertion(): boolean;
+        public allowModuleKeywordInExternalModuleReference(): boolean;
     }
 }
 declare module TypeScript {
@@ -2491,6 +2514,7 @@ declare module TypeScript {
         YieldKeyword,
         AnyKeyword,
         BooleanKeyword,
+        BoolKeyword,
         ConstructorKeyword,
         DeclareKeyword,
         GetKeyword,
@@ -2926,7 +2950,7 @@ declare module TypeScript {
 declare module TypeScript.Syntax {
     interface IFactory {
         sourceUnit(moduleElements: TypeScript.ISyntaxList, endOfFileToken: TypeScript.ISyntaxToken): TypeScript.SourceUnitSyntax;
-        externalModuleReference(requireKeyword: TypeScript.ISyntaxToken, openParenToken: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken, closeParenToken: TypeScript.ISyntaxToken): TypeScript.ExternalModuleReferenceSyntax;
+        externalModuleReference(moduleOrRequireKeyword: TypeScript.ISyntaxToken, openParenToken: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken, closeParenToken: TypeScript.ISyntaxToken): TypeScript.ExternalModuleReferenceSyntax;
         moduleNameModuleReference(moduleName: TypeScript.INameSyntax): TypeScript.ModuleNameModuleReferenceSyntax;
         importDeclaration(modifiers: TypeScript.ISyntaxList, importKeyword: TypeScript.ISyntaxToken, identifier: TypeScript.ISyntaxToken, equalsToken: TypeScript.ISyntaxToken, moduleReference: TypeScript.ModuleReferenceSyntax, semicolonToken: TypeScript.ISyntaxToken): TypeScript.ImportDeclarationSyntax;
         exportAssignment(exportKeyword: TypeScript.ISyntaxToken, equalsToken: TypeScript.ISyntaxToken, identifier: TypeScript.ISyntaxToken, semicolonToken: TypeScript.ISyntaxToken): TypeScript.ExportAssignmentSyntax;
@@ -3014,7 +3038,7 @@ declare module TypeScript.Syntax {
     }
     class NormalModeFactory implements IFactory {
         public sourceUnit(moduleElements: TypeScript.ISyntaxList, endOfFileToken: TypeScript.ISyntaxToken): TypeScript.SourceUnitSyntax;
-        public externalModuleReference(requireKeyword: TypeScript.ISyntaxToken, openParenToken: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken, closeParenToken: TypeScript.ISyntaxToken): TypeScript.ExternalModuleReferenceSyntax;
+        public externalModuleReference(moduleOrRequireKeyword: TypeScript.ISyntaxToken, openParenToken: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken, closeParenToken: TypeScript.ISyntaxToken): TypeScript.ExternalModuleReferenceSyntax;
         public moduleNameModuleReference(moduleName: TypeScript.INameSyntax): TypeScript.ModuleNameModuleReferenceSyntax;
         public importDeclaration(modifiers: TypeScript.ISyntaxList, importKeyword: TypeScript.ISyntaxToken, identifier: TypeScript.ISyntaxToken, equalsToken: TypeScript.ISyntaxToken, moduleReference: TypeScript.ModuleReferenceSyntax, semicolonToken: TypeScript.ISyntaxToken): TypeScript.ImportDeclarationSyntax;
         public exportAssignment(exportKeyword: TypeScript.ISyntaxToken, equalsToken: TypeScript.ISyntaxToken, identifier: TypeScript.ISyntaxToken, semicolonToken: TypeScript.ISyntaxToken): TypeScript.ExportAssignmentSyntax;
@@ -3102,7 +3126,7 @@ declare module TypeScript.Syntax {
     }
     class StrictModeFactory implements IFactory {
         public sourceUnit(moduleElements: TypeScript.ISyntaxList, endOfFileToken: TypeScript.ISyntaxToken): TypeScript.SourceUnitSyntax;
-        public externalModuleReference(requireKeyword: TypeScript.ISyntaxToken, openParenToken: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken, closeParenToken: TypeScript.ISyntaxToken): TypeScript.ExternalModuleReferenceSyntax;
+        public externalModuleReference(moduleOrRequireKeyword: TypeScript.ISyntaxToken, openParenToken: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken, closeParenToken: TypeScript.ISyntaxToken): TypeScript.ExternalModuleReferenceSyntax;
         public moduleNameModuleReference(moduleName: TypeScript.INameSyntax): TypeScript.ModuleNameModuleReferenceSyntax;
         public importDeclaration(modifiers: TypeScript.ISyntaxList, importKeyword: TypeScript.ISyntaxToken, identifier: TypeScript.ISyntaxToken, equalsToken: TypeScript.ISyntaxToken, moduleReference: TypeScript.ModuleReferenceSyntax, semicolonToken: TypeScript.ISyntaxToken): TypeScript.ImportDeclarationSyntax;
         public exportAssignment(exportKeyword: TypeScript.ISyntaxToken, equalsToken: TypeScript.ISyntaxToken, identifier: TypeScript.ISyntaxToken, semicolonToken: TypeScript.ISyntaxToken): TypeScript.ExportAssignmentSyntax;
@@ -3313,20 +3337,20 @@ declare module TypeScript {
         public isTypeScriptSpecific(): boolean;
     }
     class ExternalModuleReferenceSyntax extends ModuleReferenceSyntax {
-        public requireKeyword: TypeScript.ISyntaxToken;
+        public moduleOrRequireKeyword: TypeScript.ISyntaxToken;
         public openParenToken: TypeScript.ISyntaxToken;
         public stringLiteral: TypeScript.ISyntaxToken;
         public closeParenToken: TypeScript.ISyntaxToken;
-        constructor(requireKeyword: TypeScript.ISyntaxToken, openParenToken: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken, closeParenToken: TypeScript.ISyntaxToken, parsedInStrictMode: boolean);
+        constructor(moduleOrRequireKeyword: TypeScript.ISyntaxToken, openParenToken: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken, closeParenToken: TypeScript.ISyntaxToken, parsedInStrictMode: boolean);
         public accept(visitor: TypeScript.ISyntaxVisitor): any;
         public kind(): TypeScript.SyntaxKind;
         public childCount(): number;
         public childAt(slot: number): TypeScript.ISyntaxElement;
-        public update(requireKeyword: TypeScript.ISyntaxToken, openParenToken: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken, closeParenToken: TypeScript.ISyntaxToken): ExternalModuleReferenceSyntax;
-        static create1(stringLiteral: TypeScript.ISyntaxToken): ExternalModuleReferenceSyntax;
+        public update(moduleOrRequireKeyword: TypeScript.ISyntaxToken, openParenToken: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken, closeParenToken: TypeScript.ISyntaxToken): ExternalModuleReferenceSyntax;
+        static create1(moduleOrRequireKeyword: TypeScript.ISyntaxToken, stringLiteral: TypeScript.ISyntaxToken): ExternalModuleReferenceSyntax;
         public withLeadingTrivia(trivia: TypeScript.ISyntaxTriviaList): ExternalModuleReferenceSyntax;
         public withTrailingTrivia(trivia: TypeScript.ISyntaxTriviaList): ExternalModuleReferenceSyntax;
-        public withRequireKeyword(requireKeyword: TypeScript.ISyntaxToken): ExternalModuleReferenceSyntax;
+        public withModuleOrRequireKeyword(moduleOrRequireKeyword: TypeScript.ISyntaxToken): ExternalModuleReferenceSyntax;
         public withOpenParenToken(openParenToken: TypeScript.ISyntaxToken): ExternalModuleReferenceSyntax;
         public withStringLiteral(stringLiteral: TypeScript.ISyntaxToken): ExternalModuleReferenceSyntax;
         public withCloseParenToken(closeParenToken: TypeScript.ISyntaxToken): ExternalModuleReferenceSyntax;
@@ -6694,6 +6718,7 @@ declare module TypeScript {
     function getRootFilePath(outFname: string): string;
     function filePathComponents(fullPath: string): string[];
     function filePath(fullPath: string): string;
+    function convertToDirectoryPath(dirPath: string): string;
     function normalizePath(path: string): string;
 }
 declare module TypeScript {
@@ -6710,7 +6735,9 @@ declare module TypeScript {
         public removeComments: boolean;
         public watch: boolean;
         public noResolve: boolean;
+        public allowBool: boolean;
         public allowAutomaticSemicolonInsertion: boolean;
+        public allowModuleKeywordInExternalModuleReference: boolean;
         public noImplicitAny: boolean;
         public noLib: boolean;
         public codeGenTarget: TypeScript.LanguageVersion;
@@ -6836,6 +6863,7 @@ declare module TypeScript {
         private emitEnumSignature(moduleDecl);
         private moduleDeclarationCallback(pre, moduleDecl);
         public exportAssignmentCallback(pre: boolean, ast: TypeScript.ExportAssignment): boolean;
+        private resolveScriptReference(document, reference);
         private emitReferencePaths(script);
         public scriptCallback(pre: boolean, script: TypeScript.Script): boolean;
         private defaultCallback(pre, ast);
@@ -7769,6 +7797,7 @@ declare module TypeScript {
         private astCallResolutionDataMap;
         private syntaxElementSymbolMap;
         private symbolSyntaxElementMap;
+        private properties;
         private hasBeenTypeChecked;
         constructor(compilationUnitPath: string);
         public addTopLevelDecl(decl: TypeScript.PullDecl): void;
@@ -7792,6 +7821,10 @@ declare module TypeScript {
         public getCallResolutionDataForAST(ast: TypeScript.AST): TypeScript.PullAdditionalCallResolutionData;
         public setCallResolutionDataForAST(ast: TypeScript.AST, callResolutionData: TypeScript.PullAdditionalCallResolutionData): void;
         public getDiagnostics(semanticErrors: TypeScript.Diagnostic[]): void;
+        public getProperties(): SemanticInfoProperties;
+    }
+    class SemanticInfoProperties {
+        public unitContainsBool: boolean;
     }
     class SemanticInfoChain {
         public units: SemanticInfo[];
@@ -8142,7 +8175,6 @@ declare module TypeScript {
         public updateSourceUnit(fileName: string, scriptSnapshot: TypeScript.IScriptSnapshot, version: number, isOpen: boolean, textChangeRange: TypeScript.TextChangeRange): Document;
         private isDynamicModuleCompilation();
         private updateCommonDirectoryPath();
-        private convertToDirectoryPath(dirPath);
         public setEmitOptions(ioHost: EmitterIOHost): TypeScript.Diagnostic;
         public getScripts(): TypeScript.Script[];
         public getDocuments(): Document[];

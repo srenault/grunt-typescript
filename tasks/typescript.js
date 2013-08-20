@@ -483,7 +483,7 @@ else
         };
 
         Compiler.prototype.resolveRelativePath = function (path, directory) {
-            var unQuotedPath = TypeScript.stripQuotes(path);
+            var unQuotedPath = path.replace(/["']/g, "");
             var normalizedPath;
 
             if (TypeScript.isRooted(unQuotedPath) || !directory) {
